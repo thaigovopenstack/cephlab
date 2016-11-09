@@ -8,10 +8,10 @@ sed -i '5i server 2.asia.pool.ntp.org iburst' $conf
 
 sudo systemctl restart chronyd
 sleep 3
-chronyc sources
+sudo chronyc sources
 
 hosts="mds1 mds2 mon1 mon2 mon3 osd1 osd2 osd3 osd4"
 for i in $hosts;do
-scp chrony-client.sh  root@${i}:/root 
-ssh $i /root/chrony-client.sh
+scp chrony-client.sh  ceph-deploy@${i}:/home/ceph-deploy
+ssh $i /home/ceph-deploy/chrony-client.sh
 done 
