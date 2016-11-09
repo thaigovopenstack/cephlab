@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Maintain by
+#	sawangpong muadphet <sawangpong@itbakery.net>
+#	itbakery co.ltd
+#       date:  6 nov 2016
+#
+
+#step1: set local dns
+#====================================================
 cat <<HOST > /etc/hosts
 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
@@ -17,6 +25,8 @@ cat <<HOST > /etc/hosts
 
 HOST
 
+#step2: set vagrant host
+#====================================================
 echo "root:linux" | chpasswd
 echo "keepcache = 1" >> /etc/yum.conf
 echo "nameserver 8.8.8.8" > /etc/resolv.conf
@@ -27,6 +37,8 @@ chmod 0440 /etc/sudoers.d/vagrant
 sed -i.orgi "s/PasswordAuthentication no/PasswordAuthentication yes/g"    /etc/ssh/sshd_config
 systemctl restart sshd
 
+#step 3: kernel tunning
+#====================================================
 cat <<PID >> /etc/sysctl.conf
 kernel.pid_max = 4194303
 PID
@@ -35,6 +47,8 @@ echo "cat /proc/sys/kernel/pid_max"
 cat /proc/sys/kernel/pid_max
 echo "============================"
 
+#step 4: set repository
+#====================================================
 cephrelease="jewel"
 distro="el7"
 basearch="x86_64"
@@ -81,7 +95,8 @@ yum install -y epel-release
 yum install -y sshpass 
 yum update -y
 
-
+#step 5: Add user ceph-deploy
+#====================================================
 echo "add user ceph-deploy with sudo"
 echo "=============================="
 echo ""
@@ -95,7 +110,8 @@ EOF
 
 chmod 440 /etc/sudoers.d/ceph-deploy
 
-
+#step 6: set firewalld
+#====================================================
 systemctl start firewalld
 systemctl enable firewalld
 
